@@ -2,37 +2,31 @@ package com.lwy.appsmartupdate;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
 
 import com.lwy.smartupdate.UpdateManager;
 import com.lwy.smartupdate.api.IUpdateCallback;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
 
 
-    private Button mUpdateBtn;
     private String manifestJsonUrl = "https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/UpdateManifest.json";
     private IUpdateCallback mCallback;
+    private TextView mVersionTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mUpdateBtn = (Button) findViewById(R.id.update_btn);
-        mUpdateBtn.setOnClickListener(this);
-
+        mVersionTV = (TextView) findViewById(R.id.version_tv);
+        mVersionTV.setText(BuildConfig.VERSION_CODE + "");
+        checkUpdate();
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.update_btn:
-                UpdateManager.getInstance().update(this, manifestJsonUrl, null);
-                break;
-
-        }
+    private void checkUpdate() {
+        UpdateManager.getInstance().update(this, manifestJsonUrl, null);
     }
+
 
     public void registerUpdateCallbak() {
         mCallback = new IUpdateCallback() {

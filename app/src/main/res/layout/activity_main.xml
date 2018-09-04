@@ -7,16 +7,9 @@
     android:layout_height="match_parent"
     tools:context="com.lwy.appsmartupdate.MainActivity">
 
-    <Button
-        android:id="@+id/update_btn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:text="启动更新"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+    <TextView
+        android:id="@+id/version_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </android.support.constraint.ConstraintLayout>
