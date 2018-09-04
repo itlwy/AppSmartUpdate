@@ -1,0 +1,17 @@
+{
+  "minVersion": "100",
+  "minAllowPatchVersion": "100",
+  "newVersion": "101",
+  "tip": "测试更新",
+  "size": 2036177,
+  "apkURL": "https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/app/smart_update.apk",
+  "hash": "9f60c46f29299d8922a72ebfb6bab8ee",
+  "patchInfo": {
+    "v100": {
+      "patchURL": "https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/app/v100/100to101.patch",
+      "tip": "测试",
+      "hash": "9f60c46f29299d8922a72ebfb6bab8ee",
+      "size": 1262068
+    }
+  }
+}
