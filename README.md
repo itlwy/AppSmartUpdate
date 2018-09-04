@@ -17,6 +17,7 @@
 - [x] 设置仅在wifi环境下更新
 - [x] 支持外部注入网络框架(库默认使用okhttp)
 - [x] 支持前台和后台自动更新
+- [x] 支持强制更新
 - [ ] 增加智能识别wifi环境自动下载功能
 - [ ] 支持对外定制提示界面
 - [ ] 支持暂停、多线程断点下载
@@ -26,8 +27,8 @@
 
 ## 效果图与示例
 
-![示例1](https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_1.png) ![示例2](https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_2.png)
-![示例3](https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_3.png) ![示例4](https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_4.png)
+![示例1](https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_1.png) 
+![示例2](https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_2.png)
 
 ## 如何引入
 ### Gradle引入
