@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.lwy.smartupdate.Config;
 import com.lwy.smartupdate.UpdateManager;
+import com.lwy.smartupdate.api.OkhttpManager;
 
 /**
  * @author lwy 2018/9/4
@@ -18,6 +19,7 @@ public class MyApplication extends Application {
         super.onCreate();
         Config config = new Config.Builder()
                 .isDebug(true)
+                .httpManager(new OkhttpManager())
                 .build(this);
         UpdateManager.getInstance().init(config);
     }

@@ -17,7 +17,6 @@ import com.google.gson.reflect.TypeToken;
 import com.lwy.smartupdate.api.IHttpManager;
 import com.lwy.smartupdate.api.IRequest;
 import com.lwy.smartupdate.api.IUpdateCallback;
-import com.lwy.smartupdate.api.OkhttpManager;
 import com.lwy.smartupdate.data.AppUpdateModel;
 import com.lwy.smartupdate.utils.SystemUtils;
 import com.lwy.smartupdate.utils.ToastUtil;
@@ -54,7 +53,7 @@ public class UpdateManager {
     private WeakReference<UpdateDialog> mUpdateDialogTarget;
     private String mUpdateInfoUrl;
     private Set<IUpdateCallback> mListener = new CopyOnWriteArraySet<>();
-    private IHttpManager mHttpManager;
+
     private AppUpdateModel mAppUpdateModel;
     private volatile boolean isRunning;
     private volatile int notifyFlag = FLAG_NOTIFY_FOREGROUND;   // 0：前台通知下载，1：后台下载
@@ -66,7 +65,7 @@ public class UpdateManager {
     }
 
     public IHttpManager getHttpManager() {
-        return mHttpManager;
+        return mConfig.getHttpManager();
     }
 
     static class Dispatcher {
@@ -127,11 +126,6 @@ public class UpdateManager {
     }
 
 
-    public UpdateManager httpManager(IHttpManager httpManager) {
-        mHttpManager = httpManager;
-        return this;
-    }
-
     public void clear(IUpdateCallback callback) {
         if (callback != null)
             unRegister(callback);
@@ -179,8 +173,6 @@ public class UpdateManager {
 
         if (mDispatcher == null)
             mDispatcher = new Dispatcher();
-        if (mHttpManager == null)
-            mHttpManager = new OkhttpManager();
 
         if (callback != null && !mListener.contains(callback))
             mListener.add(callback);
@@ -190,7 +182,7 @@ public class UpdateManager {
             TraceUtil.i("the updating task is running now");
             return;
         }
-        mHttpManager.asyncGet(mUpdateInfoUrl, null, new IHttpManager.Callback() {
+        getHttpManager().asyncGet(mUpdateInfoUrl, null, new IHttpManager.Callback() {
             @Override
             public void onRequest(IRequest request) {
 

@@ -28,6 +28,7 @@
 - [ ] 增加智能识别wifi环境自动下载功能
 - [ ] 支持对外定制提示界面
 - [ ] 支持暂停、多线程断点下载
+- [ ] 整理服务端发布小工具(react.js+node.js)
 
 ## 流程图
 <img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/flowchart.jpg" width = 80% height = 50% />
@@ -184,6 +185,46 @@ public interface IUpdateCallback {
      * 取消了更新进度对话框,压入后台自动更新,此时由通知栏通知进度
      */
     void onBackgroundTrigger();
+}
+```
+
+### 网络框架注入
+默认使用okhttp，也可由外部注入,只需实现如下的IHttpManager接口,然后通过new Config.Builder().httpManager(new OkhttpManager())注入即可
+
+```java
+public interface IHttpManager {
+
+
+    IResponse syncGet(@NonNull String url, @NonNull Map<String, String> params) throws IOException;
+
+    /**
+     * 异步get
+     *
+     * @param url      get请求地址
+     * @param params   get参数
+     * @param callBack 回调
+     */
+    void asyncGet(@NonNull String url, @NonNull Map<String, String> params, @NonNull Callback callBack);
+
+
+    /**
+     * 异步post
+     *
+     * @param url      post请求地址
+     * @param params   post请求参数
+     * @param callBack 回调
+     */
+    void asyncPost(@NonNull String url, @NonNull Map<String, String> params, @NonNull Callback callBack);
+
+    /**
+     * 下载
+     *
+     * @param url      下载地址
+     * @param path     文件保存路径
+     * @param fileName 文件名称
+     * @param callback 回调
+     */
+    void download(@NonNull String url, @NonNull String path, @NonNull String fileName, @NonNull FileCallback callback);
 }
 ```
 

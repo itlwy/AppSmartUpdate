@@ -3,6 +3,9 @@ package com.lwy.smartupdate;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.lwy.smartupdate.api.IHttpManager;
+import com.lwy.smartupdate.api.OkhttpManager;
+
 /**
  * @author lwy 2018/9/2
  * @version v1.0.0
@@ -14,11 +17,15 @@ public class Config {
     private boolean isDebug;
     private String updateDirPath;
     private boolean isOnlyWifi;
+    private IHttpManager httpManager;
 
     private Config(Builder builder) {
         isDebug = builder.isDebug;
         updateDirPath = builder.updateDirPath;
         isOnlyWifi = builder.isOnlyWifi;
+        httpManager = builder.httpManager;
+        if (httpManager == null)
+            httpManager = new OkhttpManager();
     }
 
     public boolean isDebug() {
@@ -33,10 +40,15 @@ public class Config {
         return isOnlyWifi;
     }
 
+    public IHttpManager getHttpManager() {
+        return httpManager;
+    }
+
     public static class Builder {
         private boolean isDebug;
         private String updateDirPath;
         private boolean isOnlyWifi;
+        private IHttpManager httpManager;
 
         public Builder() {
         }
@@ -55,7 +67,10 @@ public class Config {
             isOnlyWifi = flag;
             return this;
         }
-
+        public Builder httpManager(IHttpManager httpManager) {
+            this.httpManager = httpManager;
+            return this;
+        }
         public Config build(Context context) {
             if (TextUtils.isEmpty(updateDirPath))
                 updateDirPath = context.getExternalFilesDir("update").getAbsolutePath() + "/";
