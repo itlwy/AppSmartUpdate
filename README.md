@@ -26,9 +26,10 @@
 
 ## 效果图与示例
 
-![示例1](https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_1.png?raw=true)![示例1](https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_2.png?raw=true)
-![示例1](https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_3.png?raw=true)![示例1](https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_4.png?raw=true)
-
+<figure class="half">
+   <img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_1.png?raw=true"  />
+   <img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_2.png?raw=true" />
+</figure>
 
 ## 如何引入
 ### Gradle引入
