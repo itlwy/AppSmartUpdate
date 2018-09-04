@@ -59,7 +59,7 @@ Add the dependency
 
 ```
 dependencies {
-	         implementation 'com.github.itlwy:AppSmartUpdate:v1.0.0'
+	         implementation 'com.github.itlwy:AppSmartUpdate:v1.0.1'
 	}
 
 ```
