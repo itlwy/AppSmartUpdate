@@ -25,15 +25,12 @@
 <img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/flowchart.jpg" width = 80% height = 50% />
 
 ## 效果图与示例
-<figure class="third">
-  <img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_1.png?raw=true" width = 320 />
-<img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_2.png?raw=true" width = 320 /><img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_3.png?raw=true" width = 320 />
+<span >
+<img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_1.png?raw=true" width = 320 />
+<img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_2.png?raw=true" width = 320 />
+<img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_3.png?raw=true" width = 320 />
 <img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_4.png?raw=true" width = 320 />
-</figure>
-
-
-
-
+</span>
 
 ## 如何引入
 ### Gradle引入
