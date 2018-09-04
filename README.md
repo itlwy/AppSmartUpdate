@@ -27,8 +27,8 @@
 
 ## 效果图与示例
 
-<img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_1.png" width=35% height=35%/>
-<img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_2.png" width=35% height=35%/>
+<img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_1.png" width=40% height=40%/>
+<img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_2.png" width=40% height=40%/>
 
 ## 如何引入
 ### Gradle引入
