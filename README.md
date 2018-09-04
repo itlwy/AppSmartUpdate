@@ -1,13 +1,18 @@
 ## APP自动增量更新
 
+抽取的android更新组件,目的是几行代码引入更新组件,欢迎Star，欢迎Fork~
+
+
 ## 目录
 
 * [功能介绍](#功能介绍)
 * [流程图](#流程图)
-* [效果图与示例](#效果图与示例)
+* [效果图与示例 apk](#效果图与示例 apk)
 * [如何引入](#如何引入)
+* [更新清单文件](#更新清单文件)
 * [简单使用](#简单使用)
 * [详细说明](#详细说明)
+* [依赖](#依赖)
 
 
 ## 功能介绍
@@ -25,10 +30,12 @@
 ## 流程图
 <img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/flowchart.jpg" width = 80% height = 50% />
 
-## 效果图与示例
+## 效果图与示例 apk
 
 ![示例1](https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_1.png) 
 ![示例2](https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_2.png)
+
+[点击下载 smart_update.apk](https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/app/smart_update_old.apk) 
 
 ## 如何引入
 ### Gradle引入
@@ -52,6 +59,29 @@ dependencies {
 	         implementation 'com.github.itlwy:AppSmartUpdate:v1.0.0'
 	}
 
+```
+
+## 更新清单文件
+该清单需要在服务器端配置，主要给App端判断版本，及要更新的版本资源信息等(示例见仓库根目录下的resources目录)
+
+```json
+{
+  "minVersion": "100", // app最低支持的版本代码(包含),低于此数值的app将强制更新
+  "minAllowPatchVersion": "100", // 最低支持的差分版本(包含),低于此数值的app将采取全量更新,否则采用差量
+  "newVersion": "101", // 当前最新版本代码
+  "tip": "测试更新",	// 更新提示
+  "size": 2036177,	// 最新apk文件大小
+  "apkURL": "https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/app/smart_update.apk", // 最新apk url地址
+  "hash": "9f60c46f29299d8922a72ebfb6bab8ee", // 最新apk文件的md5值
+  "patchInfo": {  // 差分包信息
+    "v100": { // v100表示-版本代码100的apk需要下载的差分包
+      "patchURL": "https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/app/v100/100to101.patch", //差分包地址
+      "tip": "测试", // 提示
+      "hash": "9f60c46f29299d8922a72ebfb6bab8ee", // 合成后apk(即版本代码101)的文件md5值
+      "size": 1262068 // 差分包大小
+    }
+  }
+}
 ```
 
 ## 简单使用
@@ -154,3 +184,8 @@ public interface IUpdateCallback {
     void onBackgroundTrigger();
 }
 ```
+
+## 依赖
+- okhttp : com.squareup.okhttp3:okhttp:3.11.0
+- gson : com.google.code.gson:gson:2.8.0
+- numberprogressbar : com.daimajia.numberprogressbar:library:1.4@aar
