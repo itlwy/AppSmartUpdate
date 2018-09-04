@@ -22,11 +22,13 @@
 - [ ] 支持暂停、多线程断点下载
 
 ## 流程图
-时序图
-
+![流程图](https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/flowchart.jpg)
 ## 效果图与示例
+<img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_1.png" width = 35% height = 30% />
+<img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_2.png" width = 35% height = 30% />
 
-
+<img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_3.png" width = 35% height = 30% />
+<img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_4.png" width = 35% height = 30% />
 
 ## 如何引入
 ### Gradle引入
@@ -47,7 +49,7 @@ Add the dependency
 
 ```
 dependencies {
-	        compile
+	         implementation 'com.github.itlwy:AppSmartUpdate:v1.0.0'
 	}
 
 ```
@@ -55,19 +57,49 @@ dependencies {
 ## 简单使用
 ### 1.初始化
 ```java
-Config config = new Config.Builder()
+public class MyApplication extends Application {
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        //推荐在Application中初始化
+        Config config = new Config.Builder()
                 .isDebug(true)
-                .isOnlyWifi(false)
-                .build(BaseApplication.getApplication());
-        UpdateManager.getInstance().init(config);//推荐在Application中初始化
+                .build(this);
+        UpdateManager.getInstance().init(config);
+    }
+}
 ```
 
 ### 2.调用
+
 ```java
-UpdateManager.getInstance().update(this,
-                "http://192.168.1.207:8020/file/public/app/UpdateManifest.json",
-                null);
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+ private Button mUpdateBtn;
+    private String manifestJsonUrl = "https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/UpdateManifest.json";
+    private IUpdateCallback mCallback;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        mUpdateBtn = (Button) findViewById(R.id.update_btn);
+        mUpdateBtn.setOnClickListener(this);
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.update_btn:
+                UpdateManager.getInstance().update(this, manifestJsonUrl, null);
+                break;
+
+        }
+    }
+}
 ```
+
 ## 详细说明
 ### 注册通知回调
 - 其他activity界面需要获知后台更新情况
