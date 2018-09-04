@@ -75,9 +75,8 @@ public class MyApplication extends Application {
 
 ```java
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
- private Button mUpdateBtn;
+    private Button mUpdateBtn;
     private String manifestJsonUrl = "https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/UpdateManifest.json";
-    private IUpdateCallback mCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
