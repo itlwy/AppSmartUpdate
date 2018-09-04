@@ -7,12 +7,14 @@
 
 * [功能介绍](#功能介绍)
 * [流程图](#流程图)
-* [效果图与示例 apk](#效果图与示例 apk)
+* [效果图与示例apk](#效果图与示例apk)
 * [如何引入](#如何引入)
 * [更新清单文件](#更新清单文件)
 * [简单使用](#简单使用)
 * [详细说明](#详细说明)
+* [差分包生成](#差分包生成)
 * [依赖](#依赖)
+* [License](#License)
 
 
 ## 功能介绍
@@ -30,7 +32,7 @@
 ## 流程图
 <img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/flowchart.jpg" width = 80% height = 50% />
 
-## 效果图与示例 apk
+## 效果图与示例apk
 
 ![示例1](https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_1.png) 
 ![示例2](https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_2.png)
@@ -185,7 +187,37 @@ public interface IUpdateCallback {
 }
 ```
 
+## 差分包生成
+库采用的差分工具为开源[bsdiff](http://www.daemonology.net/bsdiff/),本人用的是bsdiff-4.3版本,这里需要用到的是差分功能(即生成.patch)，服务端（ubantu）发布小工具是用node.js，所以偷懒直接用gcc编译一下bsdiff.c，然后写个bash，由Nodejs去调用
+
+```bash
+gcc bsdiff.c -lbz2 -o bsdiff
+```
+```bash
+#!/bin/bash
+
+$(./bsdiff-4.3/bsdiff $1 $2 $3)
+fileHash=$(md5sum $2 | cut -d ' ' -f 1)
+# fileHash="asdasd12312"
+echo -n $fileHash
+```
+
 ## 依赖
 - okhttp : com.squareup.okhttp3:okhttp:3.11.0
 - gson : com.google.code.gson:gson:2.8.0
 - numberprogressbar : com.daimajia.numberprogressbar:library:1.4@aar
+
+## License
+> Copyright 2018 lwy
+
+>Licensed under the Apache License, Version 2.0 (the "License");
+>you may not use this file except in compliance with the License.
+>You may obtain a copy of the License at
+
+>   http://www.apache.org/licenses/LICENSE-2.0
+
+>Unless required by applicable law or agreed to in writing, software
+>distributed under the License is distributed on an "AS IS" BASIS,
+>WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+>See the License for the specific language governing permissions and
+limitations under the License.
