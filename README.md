@@ -67,7 +67,7 @@ dependencies {
 ## 更新清单文件
 该清单需要在服务器端配置，主要给App端判断版本，及要更新的版本资源信息等(示例见仓库根目录下的resources目录)
 
-```json
+```javascript
 {
   "minVersion": "100", // app最低支持的版本代码(包含),低于此数值的app将强制更新
   "minAllowPatchVersion": "100", // 最低支持的差分版本(包含),低于此数值的app将采取全量更新,否则采用差量
