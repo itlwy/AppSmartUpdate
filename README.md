@@ -25,11 +25,13 @@
 <img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/flowchart.jpg" width = 80% height = 50% />
 
 ## 效果图与示例
-<center class="half">
-<img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_1.png?raw=true" width = 30% height = 30%/><img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_2.png" width = 30% height = 30% />
+<figure class="third">
+  <img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_1.png?raw=true" width = 320 />
+<img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_2.png?raw=true" width = 320 /><img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_3.png?raw=true" width = 320 />
+<img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_4.png?raw=true" width = 320 />
+</figure>
 
-<img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_3.png" width = 30% height = 30% />&nbsp;&nbsp;&nbsp;<img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_4.png" width = 30% height = 30% />
-</center>
+
 
 
 
