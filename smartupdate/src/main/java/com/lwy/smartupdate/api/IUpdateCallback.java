@@ -14,7 +14,7 @@ public interface IUpdateCallback {
     void noNewApp();
 
     /**
-     * 自动更新准备开始时回调,运行在主线程，可做一些提示等
+     * 检测到有更新,自动更新准备开始时回调,运行在主线程，可做一些提示等
      */
     void beforeUpdate();
 

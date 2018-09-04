@@ -46,8 +46,8 @@ public class UpdateService extends Service implements IAppUploadTask.CallBack {
 //    public static final String PARAM_UPDATE_PARAM_MODEL = "update_param_model";
 
 
-    private static final int FLAG_UPDATE_ALL = 0;  // 全量更新
-    private static final int FLAG_UPDATE_PATCH = 1;  // 增量更新
+    public static final int FLAG_UPDATE_ALL = 0;  // 全量更新
+    public static final int FLAG_UPDATE_PATCH = 1;  // 增量更新
 
     private static final int NOTIFY_ID = 0;
 

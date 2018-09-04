@@ -31,6 +31,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import static com.lwy.smartupdate.UpdateService.ACTION_CACEL;
 import static com.lwy.smartupdate.UpdateService.ACTION_UPDATE;
+import static com.lwy.smartupdate.UpdateService.FLAG_UPDATE_ALL;
+import static com.lwy.smartupdate.UpdateService.FLAG_UPDATE_PATCH;
 import static com.lwy.smartupdate.UpdateService.INTENT_ACTION;
 import static com.lwy.smartupdate.UpdateService.PARAM_ICONRES;
 import static com.lwy.smartupdate.UpdateService.PARAM_SHOWFLAG;
@@ -82,7 +84,10 @@ public class UpdateManager {
         }
 
         void dispatch(Runnable runnable) {
-            mHandler.post(runnable);
+            if (Looper.myLooper() == Looper.getMainLooper())
+                runnable.run();
+            else
+                mHandler.post(runnable);
         }
     }
 
@@ -156,9 +161,10 @@ public class UpdateManager {
 
     /**
      * 发起更新
+     *
      * @param activity
      * @param updateInfoUrl 自动更新的清单文件url地址
-     * @param callback  更新情况反馈的回调接口,需要回调则传入并自行做相应动作,可不传
+     * @param callback      更新情况反馈的回调接口,需要回调则传入并自行做相应动作,可不传
      */
     public void update(Activity activity, String updateInfoUrl, final IUpdateCallback callback) {
         if (mConfig == null)
@@ -201,8 +207,7 @@ public class UpdateManager {
                 mDispatcher.dispatch(new Runnable() {
                     @Override
                     public void run() {
-                        if (mActivityTarget.get() != null)
-                            checkUpdate(mAppUpdateModel);
+                        checkUpdate(mAppUpdateModel);
                     }
                 });
             }
@@ -234,13 +239,14 @@ public class UpdateManager {
             isForceUpdate = true;
         }
         String tip = appUpdateModel.getTip();
+        int updateMethod = FLAG_UPDATE_PATCH; // 差量更新
         if (mAppVersionCode < minPatchVersion) {
             //  使用全量更新
-            showUpdateDialog(isForceUpdate, 0, tip);
-        } else {
-            // 使用增量更新
-            showUpdateDialog(isForceUpdate, 1, tip);
+            updateMethod = FLAG_UPDATE_ALL;
         }
+        beforeUpdate();
+        if (mActivityTarget.get() != null)
+            showUpdateDialog(isForceUpdate, updateMethod, tip);
     }
 
     private void showUpdateDialog(final boolean isForceUpdate, final int method, String tip) {
@@ -291,30 +297,6 @@ public class UpdateManager {
 
         mUpdateDialogTarget = new WeakReference<>(updateDialog);
 
-//        AlertDialog.Builder builder = new AlertDialog.Builder(mActivityTarget.get())
-//                .setTitle("自动更新")
-//                .setCancelable(!isForceUpdate)
-//                .setMessage(tip)
-//                .setPositiveButton("更新", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        startUpdate(0, method);
-//                        showUpdatingDialog();
-//                        mDialogTarget = null;
-//                    }
-//                })
-//                .setOnCancelListener(new DialogInterface.OnCancelListener() {
-//                    @Override
-//                    public void onCancel(DialogInterface dialog) {
-//                        cancelUpdate();
-//                        mDialogTarget = null;
-//                    }
-//                });
-//        if (!isForceUpdate)
-//            builder.setNegativeButton("取消", null);
-//        AlertDialog dialog = builder.create();
-//        dialog.show();
-//        mDialogTarget = new WeakReference<>(dialog);
     }
 
     private void sendCancel2Service(Context context) {
