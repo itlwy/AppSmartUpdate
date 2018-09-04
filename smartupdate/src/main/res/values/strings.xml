@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SmartUpdate</string>
+    <string name="update_info">自动更新进行中...</string>
+</resources>
