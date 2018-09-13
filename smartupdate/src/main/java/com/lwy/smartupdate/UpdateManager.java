@@ -134,7 +134,7 @@ public class UpdateManager {
     public void clear(IUpdateCallback callback) {
         if (callback != null)
             unRegister(callback);
-        if (mUpdateDialogTarget.get() != null) {
+        if (mUpdateDialogTarget != null && mUpdateDialogTarget.get() != null) {
             mUpdateDialogTarget.get().dismiss();
         }
     }
