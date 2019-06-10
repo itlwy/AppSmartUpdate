@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.text.TextUtils;
 
-import com.cundong.utils.PatchUtils;
 import com.lwy.smartupdate.ConstantValue;
 import com.lwy.smartupdate.UpdateManager;
 import com.lwy.smartupdate.api.IHttpManager;
@@ -12,6 +11,7 @@ import com.lwy.smartupdate.api.IRequest;
 import com.lwy.smartupdate.data.AppUpdateModel;
 import com.lwy.smartupdate.utils.ApkUtils;
 import com.lwy.smartupdate.utils.FileUtils;
+import com.lwy.smartupdate.utils.PatchUtils;
 import com.lwy.smartupdate.utils.SignUtils;
 
 import java.io.File;
