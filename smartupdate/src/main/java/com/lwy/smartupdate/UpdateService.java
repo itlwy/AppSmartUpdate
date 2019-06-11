@@ -25,7 +25,9 @@ import com.lwy.smartupdate.utils.TraceUtil;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import static com.lwy.smartupdate.UpdateManager.FLAG_NOTIFY_FOREGROUND;
 
@@ -115,11 +117,14 @@ public class UpdateService extends Service implements IAppUploadTask.CallBack {
             appUploadTask = new FullAppUpdateTask(mAppUpdateModel);
         } else {
             HashMap<String, AppUpdateModel.PatchInfoModel> patchMap = mAppUpdateModel.getPatchInfoMap();
-            for (Map.Entry<String, AppUpdateModel.PatchInfoModel> entry : patchMap.entrySet()) {
+            Set<Map.Entry<String, AppUpdateModel.PatchInfoModel>> set = patchMap.entrySet();
+            Iterator<Map.Entry<String, AppUpdateModel.PatchInfoModel>> iterator = set.iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, AppUpdateModel.PatchInfoModel> entry = iterator.next();
                 String key = entry.getKey();
-                int patchVersion = Integer.parseInt(key.substring(1, key.length()));
+                int patchVersion = Integer.parseInt(key.substring(1));
                 if (patchVersion < mCurrentVersion)
-                    patchMap.remove(key);
+                    iterator.remove();
             }
             appUploadTask = new PatchAppUploadTask(this, mCurrentVersion, mAppUpdateModel.getNewVersion(),
                     mAppUpdateModel.getPatchInfoMap());
@@ -192,10 +197,6 @@ public class UpdateService extends Service implements IAppUploadTask.CallBack {
     @Override
     public void onDestroy() {
         super.onDestroy();
-    }
-
-    static {
-        System.loadLibrary("ApkPatchLibrary");
     }
 
 
