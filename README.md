@@ -1,6 +1,6 @@
 ## APP自动增量更新
 
-抽取的Android自动更新库,目的是几行代码引入更新功能,欢迎Star，欢迎Fork，谢谢～
+抽取的Android自动更新库,目的是几行代码引入更新功能,含服务端代码,欢迎Star，欢迎Fork，谢谢～
 
 
 ## 目录
@@ -233,21 +233,24 @@ public interface IHttpManager {
 
 ​	此部分采用的差分工具为开源[bsdiff](http://www.daemonology.net/bsdiff/)，用于生成.patch补丁文件，采用jni方式封装一个.so库供java调用，详见"smartupdate"库里的main/cpp目录源码，过程比较简单，就是写个jni的方法来直接调用bsdiff库，目录结构如下：
 
+```
 main
 
-​	-cpp
+	-cpp
+	
+		-bzip2
+	
+		-CMakeLists.txt
+	
+		-patchUtils.c
+	
+		-patchUtils.h
+	
+		-update-lib.cpp
 
-​		-bzip2
+```
 
-​		-CMakeLists.txt
-
-​		-patchUtils.c
-
-​		-patchUtils.h
-
-​		-update-lib.cpp
-
-​	因为bsdiff还依赖了bzip2，所以这里涉及多个源文件编译链接问题，需要在CMakeLists.txt稍作修改：
+因为bsdiff还依赖了bzip2，所以这里涉及多个源文件编译链接问题，需要在CMakeLists.txt稍作修改：
 
 ```
 # 将当前 "./src/main/cpp" 目录下的所有源文件保存到 "NATIVE_SRC" 中，然后在 add_library 方法调用。
