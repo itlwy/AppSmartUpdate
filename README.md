@@ -1,6 +1,6 @@
 ## APP自动增量更新
 
-抽取的android更新组件,目的是几行代码引入更新组件,欢迎Star，欢迎Fork~
+抽取的Android自动更新库,目的是几行代码引入更新功能,欢迎Star，欢迎Fork，谢谢～
 
 
 ## 目录
@@ -12,7 +12,7 @@
 * [更新清单文件](#更新清单文件)
 * [简单使用](#简单使用)
 * [详细说明](#详细说明)
-* [差分包生成](#差分包生成)
+* [差分包生成(服务端)](#差分包生成(服务端))
 * [依赖](#依赖)
 * [License](#License)
 
@@ -23,12 +23,11 @@
 - [x] 支持增量更新,只下载补丁包升级
 - [x] 设置仅在wifi环境下更新
 - [x] 支持外部注入网络框架(库默认使用okhttp)
-- [x] 支持前台和后台自动更新
-- [x] 支持强制更新
-- [ ] 增加智能识别wifi环境自动下载功能
+- [x] 支持前台或后台自动更新
+- [x] 支持基于版本的强制更新
 - [ ] 支持对外定制提示界面
 - [ ] 支持暂停、多线程断点下载
-- [ ] 整理服务端发布小工具(react.js+node.js)
+- [x] 含发布功能后台服务端[github](https://github.com/itlwy/App-Update-Server) (Node.js实现)
 
 ## 流程图
 <img src="https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/flowchart.jpg" width = 80% height = 50% />
@@ -59,13 +58,13 @@ Add the dependency
 
 ```
 dependencies {
-	         implementation 'com.github.itlwy:AppSmartUpdate:v1.0.2'
+	         implementation 'com.github.itlwy:AppSmartUpdate:v1.0.+'
 	}
 
 ```
 
 ## 更新清单文件
-该清单需要在服务器端配置，主要给App端判断版本，及要更新的版本资源信息等(示例见仓库根目录下的resources目录)
+该清单放置在静态服务器以供App访问，主要用于判断最新的版本，及要更新的版本资源信息等(示例见仓库根目录下的resources目录或直接访问后台代码 [github](https://github.com/itlwy/App-Update-Server))，清单由服务端程序发布apk时生成，详见后台示例:[github](https://github.com/itlwy/App-Update-Server)
 
 ```javascript
 {
@@ -228,20 +227,59 @@ public interface IHttpManager {
 }
 ```
 
-## 差分包生成
-库采用的差分工具为开源[bsdiff](http://www.daemonology.net/bsdiff/),本人用的是bsdiff-4.3版本,这里需要用到的是差分功能(即生成.patch)，服务端（ubantu）发布小工具是用node.js，所以偷懒直接用gcc编译一下bsdiff.c，然后写个bash，由Nodejs去调用
 
-```bash
-gcc bsdiff.c -lbz2 -o bsdiff
-```
-```bash
-#!/bin/bash
 
-$(./bsdiff-4.3/bsdiff $1 $2 $3)
-fileHash=$(md5sum $2 | cut -d ' ' -f 1)
-# fileHash="asdasd12312"
-echo -n $fileHash
+### 差分包合成(jni)
+
+​	此部分采用的差分工具为开源[bsdiff](http://www.daemonology.net/bsdiff/)，用于生成.patch补丁文件，采用jni方式封装一个.so库供java调用，详见"smartupdate"库里的main/cpp目录源码，过程比较简单，就是写个jni的方法来直接调用bsdiff库，目录结构如下：
+
+main
+
+​	-cpp
+
+​		-bzip2
+
+​		-CMakeLists.txt
+
+​		-patchUtils.c
+
+​		-patchUtils.h
+
+​		-update-lib.cpp
+
+​	因为bsdiff还依赖了bzip2，所以这里涉及多个源文件编译链接问题，需要在CMakeLists.txt稍作修改：
+
 ```
+# 将当前 "./src/main/cpp" 目录下的所有源文件保存到 "NATIVE_SRC" 中，然后在 add_library 方法调用。
+aux_source_directory( . NATIVE_SRC )
+# 将 "./src/main/cpp/bzip2" 目录下的子目录bzip2保存到 "BZIP2_BASE" 中，然后在 add_library 方法调用。
+aux_source_directory( ./bzip2 BZIP2_BASE )
+# 将 BZIP2_BASE 增加到 NATIVE_SRC 中，这样目录的源文件也加入了编译列表中，当然也可以不加到 NATIVE_SRC，直接调用add_library。
+list(APPEND NATIVE_SRC ${BZIP2_BASE})
+
+add_library( # Sets the name of the library.
+        update-lib
+        # Sets the library as a shared library.
+        SHARED
+        # Provides a relative path to your source file(s).
+        ${NATIVE_SRC})
+```
+
+
+
+## 差分包生成(服务端)
+
+​	服务端见[github](https://github.com/itlwy/App-Update-Server) ，使用时将manifestJsonUrl改成部署的服务器地址即可，如下示例代码片段的注释处
+
+```java
+public class MainActivity extends AppCompatActivity {
+    private String manifestJsonUrl = "https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/UpdateManifest.json";
+//    private String manifestJsonUrl = "http://192.168.2.107:8000/app/UpdateManifest.json";
+    ...
+}
+```
+
+
 
 ## 依赖
 - okhttp : com.squareup.okhttp3:okhttp:3.11.0
@@ -255,9 +293,9 @@ echo -n $fileHash
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
-
+    
        http://www.apache.org/licenses/LICENSE-2.0
-
+    
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.

@@ -22,7 +22,6 @@ Java_com_lwy_smartupdate_utils_PatchUtils_patch(JNIEnv *env, jclass type, jstrin
     int ret = applypatch(argc, ch);
     __android_log_print(ANDROID_LOG_INFO, "ApkPatchLibrary", "applypatch result = %d ", ret);
 
-
 //    FILE* f = fopen(ch[3], "r");
 //    if (f == NULL){
 //        __android_log_print(ANDROID_LOG_INFO, "ApkPatchLibrary", "------->>>>>> ");
