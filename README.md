@@ -12,7 +12,7 @@
 * [更新清单文件](#更新清单文件)
 * [简单使用](#简单使用)
 * [详细说明](#详细说明)
-* [差分包生成(服务端)](#差分包生成(服务端))
+* [差分包生成(服务端)](#差分包生成)
 * [依赖](#依赖)
 * [License](#License)
 
@@ -267,7 +267,7 @@ add_library( # Sets the name of the library.
 
 
 
-## 差分包生成(服务端)
+## 差分包生成
 
 ​	服务端见[github](https://github.com/itlwy/App-Update-Server) ，使用时将manifestJsonUrl改成部署的服务器地址即可，如下示例代码片段的注释处
 
