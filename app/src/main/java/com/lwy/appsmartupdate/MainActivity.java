@@ -10,7 +10,8 @@ import com.lwy.smartupdate.api.IUpdateCallback;
 public class MainActivity extends AppCompatActivity {
 
 
-    private String manifestJsonUrl = "https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/UpdateManifest.json";
+    private String manifestJsonUrl = "https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/app/UpdateManifest.json";
+//    private String manifestJsonUrl = "http://192.168.2.107:8000/app/UpdateManifest.json";
     private IUpdateCallback mCallback;
     private TextView mVersionTV;
 

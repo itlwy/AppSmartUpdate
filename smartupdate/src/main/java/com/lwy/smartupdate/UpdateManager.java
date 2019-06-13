@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.google.gson.Gson;
@@ -191,7 +192,6 @@ public class UpdateManager {
         getHttpManager().asyncGet(mUpdateInfoUrl, null, new IHttpManager.Callback() {
             @Override
             public void onRequest(IRequest request) {
-
             }
 
             @Override
@@ -199,6 +199,7 @@ public class UpdateManager {
                 JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject().get("patchInfo").getAsJsonObject();
                 Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
                 mAppUpdateModel = gson.fromJson(result, AppUpdateModel.class);
+                mAppUpdateModel.setManifestURL(mUpdateInfoUrl);
 
                 HashMap<String, AppUpdateModel.PatchInfoModel> map;
                 mAppUpdateModel.setPatchInfoMap((HashMap<String, AppUpdateModel.PatchInfoModel>)
@@ -217,8 +218,12 @@ public class UpdateManager {
                 mDispatcher.dispatch(new Runnable() {
                     @Override
                     public void run() {
-                        for (IUpdateCallback iUpdateCallback : UpdateManager.getInstance().mListener) {
-                            iUpdateCallback.onError(error);
+                        if (UpdateManager.getInstance().mListener.size() == 0) {
+                            Log.e(this.getClass().getSimpleName(), error);
+                        } else {
+                            for (IUpdateCallback iUpdateCallback : UpdateManager.getInstance().mListener) {
+                                iUpdateCallback.onError(error);
+                            }
                         }
                     }
                 });

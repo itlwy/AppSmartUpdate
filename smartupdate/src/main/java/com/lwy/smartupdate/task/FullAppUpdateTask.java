@@ -29,7 +29,12 @@ public class FullAppUpdateTask extends AppUpdateTask {
     @Override
     protected void execute() {
         String fileUrl = mAppUpdateModel.getApkURL();
-        mFileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1, fileUrl.length());
+        if (!(fileUrl.startsWith("http://") || fileUrl.startsWith("https://"))) {
+            int index = mAppUpdateModel.getManifestURL().lastIndexOf("/");
+            String relativeURL = mAppUpdateModel.getManifestURL().substring(0, index);
+            fileUrl = relativeURL + "/" + fileUrl;
+        }
+        mFileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
         File destFile = new File(dirPath, mFileName);
         if (!destFile.getParentFile().exists()) {
             destFile.getParentFile().mkdirs();

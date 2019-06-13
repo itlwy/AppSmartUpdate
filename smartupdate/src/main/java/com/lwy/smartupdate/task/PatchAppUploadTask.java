@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.text.TextUtils;
 
-import com.cundong.utils.PatchUtils;
 import com.lwy.smartupdate.ConstantValue;
 import com.lwy.smartupdate.UpdateManager;
 import com.lwy.smartupdate.api.IHttpManager;
@@ -12,6 +11,7 @@ import com.lwy.smartupdate.api.IRequest;
 import com.lwy.smartupdate.data.AppUpdateModel;
 import com.lwy.smartupdate.utils.ApkUtils;
 import com.lwy.smartupdate.utils.FileUtils;
+import com.lwy.smartupdate.utils.PatchUtils;
 import com.lwy.smartupdate.utils.SignUtils;
 
 import java.io.File;
@@ -63,7 +63,12 @@ public class PatchAppUploadTask extends AppUpdateTask {
 
     private void download(final AppUpdateModel.PatchInfoModel currentPatch) {
         String fileUrl = currentPatch.getPatchURL();
-        final String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1, fileUrl.length());
+        if (!(fileUrl.startsWith("http://") || fileUrl.startsWith("https://"))) {
+            int index = UpdateManager.getInstance().getAppUpdateModel().getManifestURL().lastIndexOf("/");
+            String relativeURL = UpdateManager.getInstance().getAppUpdateModel().getManifestURL().substring(0, index);
+            fileUrl = relativeURL + "/" + fileUrl;
+        }
+        final String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
         File destFile = new File(dirPath, fileName);
         if (!destFile.getParentFile().exists()) {
             destFile.getParentFile().mkdirs();
@@ -106,11 +111,13 @@ public class PatchAppUploadTask extends AppUpdateTask {
         if (packageInfo != null) {
 
             // TODO: 2018/8/30 检查本地安装的apk的md5是否正常 --防止本地apk被篡改了
-
-            String oldApkSource = ApkUtils.getSourceApkPath(mContext, mContext.getPackageName());
-
+            String oldApkSource;
+            if (patchAPKList.size() > 0) {
+                oldApkSource = patchAPKList.get(patchAPKList.size() - 1);
+            } else {
+                oldApkSource = ApkUtils.getSourceApkPath(mContext, mContext.getPackageName());
+            }
             if (!TextUtils.isEmpty(oldApkSource)) {
-
                 mCurrentVersion++;
                 String newAPKPath = dirPath + mCurrentVersion + ".apk";
                 int patchResult = PatchUtils.patch(oldApkSource, newAPKPath, patchFilePath);
