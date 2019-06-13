@@ -199,6 +199,7 @@ public class UpdateManager {
                 JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject().get("patchInfo").getAsJsonObject();
                 Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
                 mAppUpdateModel = gson.fromJson(result, AppUpdateModel.class);
+                mAppUpdateModel.setManifestURL(mUpdateInfoUrl);
 
                 HashMap<String, AppUpdateModel.PatchInfoModel> map;
                 mAppUpdateModel.setPatchInfoMap((HashMap<String, AppUpdateModel.PatchInfoModel>)

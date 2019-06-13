@@ -26,6 +26,7 @@ public class AppUpdateModel {
          }
      }
      }*/
+    private String manifestURL;   // updatemanifest url
     private int minVersion;
     private int minAllowPatchVersion;
     private int newVersion;
@@ -34,6 +35,14 @@ public class AppUpdateModel {
     private String apkURL;
     private String hash;
     private HashMap<String, PatchInfoModel> patchInfoMap;
+
+    public String getManifestURL() {
+        return manifestURL;
+    }
+
+    public void setManifestURL(String manifestURL) {
+        this.manifestURL = manifestURL;
+    }
 
     public int getMinVersion() {
         return minVersion;

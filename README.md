@@ -37,7 +37,7 @@
 ![示例1](https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_1.png) 
 ![示例2](https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/update_2.png)
 
-[点击下载 smart_update.apk](https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/app/smart_update_old.apk) 
+[点击下载 smart-update.apk](https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/app/v100/smart-updatev100.apk) 
 
 ## 如何引入
 ### Gradle引入
@@ -58,7 +58,7 @@ Add the dependency
 
 ```
 dependencies {
-	         implementation 'com.github.itlwy:AppSmartUpdate:v1.0.+'
+	         implementation 'com.github.itlwy:AppSmartUpdate:v1.0.4'
 	}
 
 ```
@@ -68,19 +68,19 @@ dependencies {
 
 ```javascript
 {
-  "minVersion": "100", // app最低支持的版本代码(包含),低于此数值的app将强制更新
-  "minAllowPatchVersion": "100", // 最低支持的差分版本(包含),低于此数值的app将采取全量更新,否则采用差量
-  "newVersion": "101", // 当前最新版本代码
-  "tip": "测试更新",	// 更新提示
-  "size": 2036177,	// 最新apk文件大小
-  "apkURL": "https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/app/smart_update.apk", // 最新apk url地址
-  "hash": "9f60c46f29299d8922a72ebfb6bab8ee", // 最新apk文件的md5值
+  "minVersion": 100, // app最低支持的版本代码(包含),低于此数值的app将强制更新
+  "minAllowPatchVersion": 100, // 最低支持的差分版本(包含),低于此数值的app将采取全量更新,否则采用差量
+  "newVersion": 101, // 当前最新版本代码
+  "tip": "test update",	// 更新提示
+  "size": 1956631,	// 最新apk文件大小
+  "apkURL": "https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/app/smart-update.apk", // 最新apk 绝对url地址，也可用相对地址，如下方的"patchURL"字段
+  "hash": "ea97c8efa490a2eaf7d10b37e63dab0e", // 最新apk文件的md5值
   "patchInfo": {  // 差分包信息
     "v100": { // v100表示-版本代码100的apk需要下载的差分包
-      "patchURL": "https://raw.githubusercontent.com/itlwy/AppSmartUpdate/master/resources/app/v100/100to101.patch", //差分包地址
-      "tip": "测试", // 提示
-      "hash": "9f60c46f29299d8922a72ebfb6bab8ee", // 合成后apk(即版本代码101)的文件md5值
-      "size": 1262068 // 差分包大小
+      "patchURL": "v100/100to101.patch", //差分包地址，相对此UpdateManifest.json文件的地址,也可用绝对地址
+      "tip": "101 version", // 提示
+      "hash": "ea97c8efa490a2eaf7d10b37e63dab0e", // 合成后apk(即版本代码101)的文件md5值
+      "size": 1114810 // 差分包大小
     }
   }
 }

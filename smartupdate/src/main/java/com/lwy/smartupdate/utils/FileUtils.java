@@ -123,7 +123,6 @@ public class FileUtils {
      * 删除指定路径里的所有文件(不包含该文件夹)
      */
     public static boolean deleteAllFiles(String path) {
-        boolean flag = true;
         File file = new File(path);
         if (!file.exists()) {
             return false;
@@ -133,16 +132,18 @@ public class FileUtils {
         }
         String[] tempList = file.list();
         File temp = null;
-        for (int i = 0; i < tempList.length; i++) {
-            temp = new File(path, tempList[i]);
-            if (temp.isDirectory())
-                deleteAllFiles(temp.getAbsolutePath());
-            else {
-                temp.delete();
-            }
+        if (tempList != null && tempList.length > 0) {
+            for (int i = 0; i < tempList.length; i++) {
+                temp = new File(path, tempList[i]);
+                if (temp.isDirectory())
+                    deleteAllFiles(temp.getAbsolutePath());
+                else {
+                    temp.delete();
+                }
 
+            }
         }
-        return flag;
+        return true;
     }
 
     /**

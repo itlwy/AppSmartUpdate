@@ -63,7 +63,12 @@ public class PatchAppUploadTask extends AppUpdateTask {
 
     private void download(final AppUpdateModel.PatchInfoModel currentPatch) {
         String fileUrl = currentPatch.getPatchURL();
-        final String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1, fileUrl.length());
+        if (!(fileUrl.startsWith("http://") || fileUrl.startsWith("https://"))) {
+            int index = UpdateManager.getInstance().getAppUpdateModel().getManifestURL().lastIndexOf("/");
+            String relativeURL = UpdateManager.getInstance().getAppUpdateModel().getManifestURL().substring(0, index);
+            fileUrl = relativeURL + "/" + fileUrl;
+        }
+        final String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
         File destFile = new File(dirPath, fileName);
         if (!destFile.getParentFile().exists()) {
             destFile.getParentFile().mkdirs();
@@ -107,10 +112,10 @@ public class PatchAppUploadTask extends AppUpdateTask {
 
             // TODO: 2018/8/30 检查本地安装的apk的md5是否正常 --防止本地apk被篡改了
             String oldApkSource;
-            if (patchAPKList.size()>0) {
-                oldApkSource = patchAPKList.get(patchAPKList.size()-1);
-            }else{
-                oldApkSource= ApkUtils.getSourceApkPath(mContext, mContext.getPackageName());
+            if (patchAPKList.size() > 0) {
+                oldApkSource = patchAPKList.get(patchAPKList.size() - 1);
+            } else {
+                oldApkSource = ApkUtils.getSourceApkPath(mContext, mContext.getPackageName());
             }
             if (!TextUtils.isEmpty(oldApkSource)) {
                 mCurrentVersion++;
