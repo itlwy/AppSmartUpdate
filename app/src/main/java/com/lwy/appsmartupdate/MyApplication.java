@@ -19,6 +19,7 @@ public class MyApplication extends Application {
         super.onCreate();
         Config config = new Config.Builder()
                 .isDebug(true)
+                .isShowInternalDialog(false)
                 .httpManager(new OkhttpManager())
                 .build(this);
         UpdateManager.getInstance().init(config);

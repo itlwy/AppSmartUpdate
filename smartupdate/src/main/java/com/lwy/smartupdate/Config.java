@@ -17,12 +17,14 @@ public class Config {
     private boolean isDebug;
     private String updateDirPath;
     private boolean isOnlyWifi;
+    private boolean isShowDialog;
     private IHttpManager httpManager;
 
     private Config(Builder builder) {
         isDebug = builder.isDebug;
         updateDirPath = builder.updateDirPath;
         isOnlyWifi = builder.isOnlyWifi;
+        isShowDialog = builder.isShowDialog;
         httpManager = builder.httpManager;
         if (httpManager == null)
             httpManager = new OkhttpManager();
@@ -40,6 +42,10 @@ public class Config {
         return isOnlyWifi;
     }
 
+    public boolean isShowDialog() {
+        return isShowDialog;
+    }
+
     public IHttpManager getHttpManager() {
         return httpManager;
     }
@@ -48,6 +54,7 @@ public class Config {
         private boolean isDebug;
         private String updateDirPath;
         private boolean isOnlyWifi;
+        private boolean isShowDialog = true;
         private IHttpManager httpManager;
 
         public Builder() {
@@ -67,10 +74,17 @@ public class Config {
             isOnlyWifi = flag;
             return this;
         }
+
+        public Builder isShowInternalDialog(boolean flag) {
+            isShowDialog = flag;
+            return this;
+        }
+
         public Builder httpManager(IHttpManager httpManager) {
             this.httpManager = httpManager;
             return this;
         }
+
         public Config build(Context context) {
             if (TextUtils.isEmpty(updateDirPath))
                 updateDirPath = context.getExternalFilesDir("update").getAbsolutePath() + "/";
