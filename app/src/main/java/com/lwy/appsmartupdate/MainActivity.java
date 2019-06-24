@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mVersionTV = (TextView) findViewById(R.id.version_tv);
         mVersionTV.setText(BuildConfig.VERSION_CODE + "");
-        registerUpdateCallbak();
+//        registerUpdateCallbak();  // 需要自定义弹框时打开注释
         checkUpdate();
 
     }
