@@ -42,7 +42,7 @@ public class UpdateService extends Service implements IAppUploadTask.CallBack {
     public static final int ACTION_UPDATE = 100;  // 发起更新
     public static final int ACTION_CACEL = 101;  // 发起取消
 
-    public static final String PARAM_SHOWFLAG = "showFlag";
+//    public static final String PARAM_SHOWFLAG = "showFlag";
     public static final String PARAM_UPDATEMETHODFLAG = "updateMethod";
     public static final String PARAM_ICONRES = "mIconRes";
 //    public static final String PARAM_UPDATE_PARAM_MODEL = "update_param_model";

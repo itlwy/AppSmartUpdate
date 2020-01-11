@@ -25,8 +25,8 @@
 - [x] 支持外部注入网络框架(库默认使用okhttp)
 - [x] 支持前台或后台自动更新
 - [x] 支持基于版本的强制更新
-- [ ] 支持对外定制提示界面
-- [ ] 支持暂停、多线程断点下载
+- [x] 支持对外定制更新提示和更新进度界面
+- [ ] 记忆下载
 - [x] 含发布功能后台服务端[github](https://github.com/itlwy/App-Update-Server) (Node.js实现)
 
 ## 流程图
@@ -58,7 +58,7 @@ Add the dependency
 
 ```
 dependencies {
-	         implementation 'com.github.itlwy:AppSmartUpdate:v1.0.5'
+	         implementation 'com.github.itlwy:AppSmartUpdate:v1.0.6'
 	}
 
 ```
@@ -225,6 +225,114 @@ public interface IHttpManager {
      */
     void download(@NonNull String url, @NonNull String path, @NonNull String fileName, @NonNull FileCallback callback);
 }
+```
+
+### 定制更新交互界面
+
+每个应用的风格都可能是不一样的，因此这里也支持自定义弹出的提示框和进度框，详细见如下代码示例：
+
+1. 初始化config时需要将内部默认的弹框屏蔽掉
+
+   ```java
+    public class MyApplication extends Application {
+   
+       @Override
+       public void onCreate() {
+           super.onCreate();
+            Config config = new Config.Builder()
+                   .isShowInternalDialog(false)
+                   .build(this);
+           UpdateManager.getInstance().init(config);
+       }
+   }
+   ```
+
+2. 自定义对话框，如下(详细代码在MainActivity.java里)：
+
+```java
+ public void registerUpdateCallbak() {
+        mCallback = new IUpdateCallback() {
+            @Override
+            public void noNewApp() {
+                Toast.makeText(MainActivity.this, "当前已是最新版本!", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void hasNewApp(AppUpdateModel appUpdateModel, UpdateManager updateManager, final int updateMethod) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                mDialog = builder.setTitle("自动更新提示")
+                        .setMessage(appUpdateModel.getTip())
+                        .setPositiveButton("更新", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                UpdateManager.getInstance().startUpdate(updateMethod);
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        }).create();
+                mDialog.show();
+            }
+
+            @Override
+            public void beforeUpdate() {
+                // 更新开始
+                mProgressDialog = new ProgressDialog(MainActivity.this);
+                mProgressDialog.setTitle("更新中...");
+                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                mProgressDialog.setMessage("正在玩命更新中...");
+                mProgressDialog.setMax(100);
+                mProgressDialog.setProgress(0);
+                mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        // 退到后台自动更新，进度由通知栏显示
+                        if (UpdateManager.getInstance().isRunning()) {
+                            UpdateManager.getInstance().onBackgroundTrigger();
+                        }
+                    }
+                });
+                mProgressDialog.show();
+            }
+
+            @Override
+            public void onProgress(int percent, long totalLength, int patchIndex, int patchCount) {
+                String tip;
+                if (patchCount > 0) {
+                    tip = String.format("正在下载补丁%d/%d", patchIndex, patchCount);
+                } else {
+                    tip = "正在下载更新中...";
+                }
+                mProgressDialog.setProgress(percent);
+                mProgressDialog.setMessage(tip);
+            }
+
+            @Override
+            public void onCompleted() {
+                mProgressDialog.dismiss();
+            }
+
+            @Override
+            public void onError(String error) {
+                Toast.makeText(MainActivity.this, error, Toast.LENGTH_LONG).show();
+                mProgressDialog.dismiss();
+            }
+
+            @Override
+            public void onCancelUpdate() {
+
+            }
+
+            @Override
+            public void onBackgroundTrigger() {
+                Toast.makeText(MainActivity.this, "转为后台更新，进度由通知栏提示!", Toast.LENGTH_LONG).show();
+            }
+        };
+        UpdateManager.getInstance().register(mCallback);
+    }
 ```
 
 

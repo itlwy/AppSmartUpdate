@@ -36,7 +36,6 @@ import static com.lwy.smartupdate.UpdateService.FLAG_UPDATE_ALL;
 import static com.lwy.smartupdate.UpdateService.FLAG_UPDATE_PATCH;
 import static com.lwy.smartupdate.UpdateService.INTENT_ACTION;
 import static com.lwy.smartupdate.UpdateService.PARAM_ICONRES;
-import static com.lwy.smartupdate.UpdateService.PARAM_SHOWFLAG;
 import static com.lwy.smartupdate.UpdateService.PARAM_UPDATEMETHODFLAG;
 
 /**
@@ -62,6 +61,10 @@ public class UpdateManager {
     private volatile int notifyFlag = FLAG_NOTIFY_FOREGROUND;   // 0：前台通知下载，1：后台下载
     private int mAppVersionCode;
 
+
+    public boolean isRunning() {
+        return isRunning;
+    }
 
     public int getNotifyFlag() {
         return notifyFlag;
@@ -124,7 +127,7 @@ public class UpdateManager {
         if (config == null)
             throw new IllegalArgumentException("Config can not be initialized with null");
         if (mConfig != null) {
-            TraceUtil.w("have already initialized,you should call clear method first!!");
+            TraceUtil.w("have already initialized,you should call destroy method first!!");
         } else {
             mConfig = config;
         }
@@ -149,7 +152,8 @@ public class UpdateManager {
         mListener.clear();
         clear(null);
         mConfig = null;
-        sendCancel2Service(context);
+        if (isRunning)
+            sendCancel2Service(context);
     }
 
     public void register(IUpdateCallback callback) {
@@ -159,6 +163,11 @@ public class UpdateManager {
     }
 
     /************   分割线   ************/
+
+    public void update(Activity activity, String updateInfoUrl) {
+        update(activity, updateInfoUrl, null);
+    }
+
 
     /**
      * 发起更新
@@ -249,8 +258,8 @@ public class UpdateManager {
             //  使用全量更新
             updateMethod = FLAG_UPDATE_ALL;
         }
-        beforeUpdate();
-        if (mActivityTarget.get() != null)
+        hasNewApp(updateMethod);
+        if (mConfig.isShowDialog() && mActivityTarget.get() != null)
             showUpdateDialog(isForceUpdate, updateMethod, tip);
     }
 
@@ -260,7 +269,6 @@ public class UpdateManager {
 
             @Override
             public void onIgnored(View view) {
-                // TODO: 2018/8/31 忽略此版本更新,不再提示此版本更新
             }
 
             @Override
@@ -268,16 +276,13 @@ public class UpdateManager {
                 mUpdateDialogTarget.get().setOKBtnEnable(false);
                 mUpdateDialogTarget.get().showProgressBar(true);
                 mUpdateDialogTarget.get().showIgnoreTextView(false);
-                startUpdate(0, method);
-                isRunning = true;
+                startUpdate(method);
                 mUpdateDialogTarget.get().setUpdating(true);
-//                        showUpdatingDialog();
             }
 
             @Override
             public void onClosed(View view) {
                 if (mUpdateDialogTarget.get().isUpdating()) {
-                    notifyFlag = FLAG_NOTIFY_BACKGROUND;
                     onBackgroundTrigger();
                 }
             }
@@ -290,7 +295,6 @@ public class UpdateManager {
                 @Override
                 public void onCancel(DialogInterface dialog) {
                     if (mUpdateDialogTarget.get().isUpdating()) {
-                        notifyFlag = FLAG_NOTIFY_BACKGROUND;
                         onBackgroundTrigger();
                     }
                 }
@@ -311,17 +315,18 @@ public class UpdateManager {
     }
 
     /**
-     * @param showFlag 0：前台通知下载，1：后台下载
-     * @param method   0：全量更新，1：增量更新
+     * @param method 0：全量更新，1：增量更新
      */
-    private void startUpdate(int showFlag, int method) {
+    public void startUpdate(int method) {
+        beforeUpdate();
         Intent intent = new Intent(mActivityTarget.get(), UpdateService.class);
         intent.putExtra(INTENT_ACTION, ACTION_UPDATE);
-        intent.putExtra(PARAM_SHOWFLAG, showFlag);
+//        intent.putExtra(PARAM_SHOWFLAG, showFlag);
         intent.putExtra(PARAM_UPDATEMETHODFLAG, method);
         intent.putExtra(PARAM_ICONRES, android.R.drawable.btn_star);
 //        intent.putExtra(UPDATE_PARAM_MODEL, mAppUpdateModel);
         mActivityTarget.get().startService(intent);
+        isRunning = true;
     }
 
     /************   分割线   ************/
@@ -339,7 +344,21 @@ public class UpdateManager {
         });
     }
 
-    void cancelUpdate() {
+    void hasNewApp(final int updateMethod) {
+        final AppUpdateModel copyModel = (AppUpdateModel) mAppUpdateModel.clone();
+        mDispatcher.dispatch(new Runnable() {
+            @Override
+            public void run() {
+                for (IUpdateCallback iUpdateCallback : UpdateManager.getInstance().mListener) {
+                    iUpdateCallback.hasNewApp(copyModel, UpdateManager.this, updateMethod);
+                }
+            }
+        });
+    }
+
+    public void cancelUpdate() {
+        if (isRunning && mActivityTarget.get() != null)
+            sendCancel2Service(mActivityTarget.get());
         mDispatcher.dispatch(new Runnable() {
             @Override
             public void run() {
@@ -356,7 +375,11 @@ public class UpdateManager {
         });
     }
 
-    void onBackgroundTrigger() {
+    /**
+     * 触发后台更新模式，由通知栏显示进度
+     */
+    public void onBackgroundTrigger() {
+        notifyFlag = FLAG_NOTIFY_BACKGROUND;
         if (UpdateManager.getInstance().mListener.size() == 0
                 && mActivityTarget.get() != null) {
             ToastUtil.toast(mActivityTarget.get(), "更新程序后台进行,可在通知栏查看进度");
@@ -389,7 +412,9 @@ public class UpdateManager {
                 } else {
                     tip = "正在下载更新中...";
                 }
-                if (mActivityTarget.get() != null) {
+                if (mActivityTarget.get() != null
+                        && mUpdateDialogTarget != null
+                        && mUpdateDialogTarget.get() != null) {
                     mUpdateDialogTarget.get().setProgress(percent);
                     mUpdateDialogTarget.get().setText(tip);
                 }
@@ -404,7 +429,7 @@ public class UpdateManager {
         mDispatcher.dispatch(new Runnable() {
             @Override
             public void run() {
-                if (mUpdateDialogTarget.get() != null)
+                if (mUpdateDialogTarget != null && mUpdateDialogTarget.get() != null)
                     mUpdateDialogTarget.get().dismiss();
                 mUpdateDialogTarget = null;
                 for (IUpdateCallback iUpdateCallback : UpdateManager.getInstance().mListener) {
@@ -419,7 +444,7 @@ public class UpdateManager {
         mDispatcher.dispatch(new Runnable() {
             @Override
             public void run() {
-                if (mUpdateDialogTarget.get() != null)
+                if (mUpdateDialogTarget != null && mUpdateDialogTarget.get() != null)
                     mUpdateDialogTarget.get().dismiss();
                 mUpdateDialogTarget = null;
                 if (UpdateManager.getInstance().mListener.size() == 0

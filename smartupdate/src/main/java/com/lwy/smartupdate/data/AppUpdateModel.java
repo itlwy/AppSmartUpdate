@@ -3,12 +3,14 @@ package com.lwy.smartupdate.data;
 import android.os.Parcel;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by lwy on 2018/8/29.
  */
 
-public class AppUpdateModel {
+public class AppUpdateModel implements Cloneable {
     /* {
          "minVersion": "100",
              "minAllowPatchVersion": "101",
@@ -100,6 +102,24 @@ public class AppUpdateModel {
         this.hash = hash;
     }
 
+    @Override
+    public Object clone() {
+        AppUpdateModel cloneModel = null;
+        try {
+            cloneModel = (AppUpdateModel) super.clone();
+            cloneModel.patchInfoMap = new HashMap();
+            Set<Map.Entry<String, PatchInfoModel>> entrys = patchInfoMap.entrySet();
+            for (Map.Entry<String, PatchInfoModel> entry : entrys) {
+                String key = entry.getKey();
+                PatchInfoModel clonePatchInfoModel = (PatchInfoModel) entry.getValue().clone();
+                cloneModel.patchInfoMap.put(key, clonePatchInfoModel);
+            }
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return cloneModel;
+    }
+
     public HashMap<String, PatchInfoModel> getPatchInfoMap() {
         return patchInfoMap;
     }
@@ -108,7 +128,7 @@ public class AppUpdateModel {
         this.patchInfoMap = patchInfoMap;
     }
 
-    public static class PatchInfoModel {
+    public static class PatchInfoModel implements Cloneable {
         private String patchURL;
         private String tip;
         private int size;
@@ -154,6 +174,16 @@ public class AppUpdateModel {
             this.hash = in.readString();
         }
 
+        @Override
+        public Object clone() {
+            PatchInfoModel cloneModel = null;
+            try {
+                cloneModel = (PatchInfoModel) super.clone();
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+            return cloneModel;
+        }
     }
 
 }

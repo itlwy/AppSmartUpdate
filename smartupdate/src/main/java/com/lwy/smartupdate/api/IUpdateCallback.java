@@ -1,5 +1,8 @@
 package com.lwy.smartupdate.api;
 
+import com.lwy.smartupdate.UpdateManager;
+import com.lwy.smartupdate.data.AppUpdateModel;
+
 /**
  * @author lwy 2018/8/30
  * @version v1.0.0
@@ -12,6 +15,14 @@ public interface IUpdateCallback {
      * 通知无新版本需要更新,运行在主线程
      */
     void noNewApp();
+
+    /**
+     * 检测到有新版本更新,运行在主线程，可用来自定义提示框
+     * @param appUpdateModel    更新清单的model类
+     * @param updateManager     单例的UpdateManager 同UpdateManager.getInstance()
+     * @param updateMethod      更新的方式，增量 or 全量
+     */
+    void hasNewApp(AppUpdateModel appUpdateModel, UpdateManager updateManager,int updateMethod);
 
     /**
      * 检测到有更新,自动更新准备开始时回调,运行在主线程，可做一些提示等

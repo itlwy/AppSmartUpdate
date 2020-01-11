@@ -19,6 +19,7 @@ public class MyApplication extends Application {
         super.onCreate();
         Config config = new Config.Builder()
                 .isDebug(true)
+//                .isShowInternalDialog(false)     // 需要自定义弹框时打开注释
                 .httpManager(new OkhttpManager())
                 .build(this);
         UpdateManager.getInstance().init(config);
