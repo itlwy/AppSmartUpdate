@@ -26,7 +26,6 @@
 - [x] 支持前台或后台自动更新
 - [x] 支持基于版本的强制更新
 - [x] 支持对外定制更新提示和更新进度界面
-- [ ] 记忆下载
 - [x] 含发布功能后台服务端[github](https://github.com/itlwy/App-Update-Server) (Node.js实现)
 
 ## 流程图
@@ -58,7 +57,7 @@ Add the dependency
 
 ```
 dependencies {
-	         implementation 'com.github.itlwy:AppSmartUpdate:v1.0.6'
+	         implementation 'com.github.itlwy:AppSmartUpdate:v1.0.7'
 	}
 
 ```
